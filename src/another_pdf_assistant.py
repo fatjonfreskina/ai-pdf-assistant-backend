@@ -29,14 +29,14 @@ def get_assistant():
     return client.beta.assistants.create(
         model='gpt-4o',
         description='You are a PDF retrieval assistant.',
-        instructions="You are a helpful assistant designed to output only JSON. Find information from the text and files provided.",
+        instructions="You are a helpful assistant for service technicians. You can answer questions about the content of PDFs.",
         tools=[{"type": "file_search"}],
         # response_format={"type": "json_object"}, # Isn't possible with "file_search"
         name='My Assistant Name',
     )
 
 # Add your prompt here
-prompt = "What is the pdf in your attachments about? Output in JSON format."
+prompt = "What does the High Inverter Temperature error mean in the TT series Danfoss Turbocor compressors mean? How can I assess the issue?"
 client.beta.threads.messages.create(
     thread_id = thread.id,
     role='user',
@@ -66,6 +66,7 @@ assert message.content[0].type == "text"
 # Output text of the Assistant
 res_txt = message.content[0].text.value
 
+""" Not really interested in the JSON output, but if you are, here's how to parse it:
 # Because the Assistant can't produce JSON (as we're using "file_search"),
 # it will likely output text + some JSON code. We can parse and extract just
 # the JSON part, and ignore everything else (eg. gpt4o will start with something
@@ -77,11 +78,13 @@ if res_txt.endswith('```'):
 res_txt = res_txt[:res_txt.rfind('}')+1]
 res_txt = res_txt[res_txt.find('{'):]
 res_txt.strip()
+"""
 
 # Parse the JSON output
-data = json.loads(res_txt)
+# data = json.loads(res_txt)
+# print(data)
 
-print(data)
+print(res_txt)
 
 # Delete the file(s) afterward to preserve space (max 100gb/company)
 # delete_ok = client.files.delete(file.id)
