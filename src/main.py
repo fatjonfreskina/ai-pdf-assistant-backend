@@ -1,24 +1,19 @@
-# import .env file
-from dotenv import load_dotenv
-from pdf_assistant import PDFAssistant
-import os, sys
-load_dotenv()
+from flask import Flask, request, jsonify
+from data.extensions import db, jwt
+from api.auth import auth_bp
+from api.users import users_bp
 
-def main():
-    api_key = os.getenv("OPENAI_API_KEY")
-    client = PDFAssistant(api_key)
-    filename = sys.argv[1]
-    client.upload_file(filename)
+# TODO: Move extensions in another place
+# TODO: Fix the sha256 in db
 
-    while True:
-          question = input("Enter your question (or type 'exit' to quit): ")
-          if question.lower() in ['exit', 'quit']:
-            break
-
-          answers = client.get_answers(question)
-          for answer in answers:
-              print(answer)
-
-
-if __name__ == '__main__':
-    main()
+def create_app():
+    app = Flask(__name__)
+    app.config.from_prefixed_env()
+    db.init_app(app)
+    jwt.init_app(app)
+    
+    # Register the blueprints
+    app.register_blueprint(auth_bp, url_prefix='/auth')
+    app.register_blueprint(users_bp, url_prefix='/users')
+    
+    return app

@@ -88,3 +88,22 @@ print(res_txt)
 
 # Delete the file(s) afterward to preserve space (max 100gb/company)
 # delete_ok = client.files.delete(file.id)
+
+def main():
+    api_key = os.getenv("OPENAI_API_KEY")
+    client = PDFAssistant(api_key)
+    filename = sys.argv[1]
+    client.upload_file(filename)
+
+    while True:
+          question = input("Enter your question (or type 'exit' to quit): ")
+          if question.lower() in ['exit', 'quit']:
+            break
+
+          answers = client.get_answers(question)
+          for answer in answers:
+              print(answer)
+
+
+if __name__ == '__main__':
+    main()
