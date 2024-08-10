@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 from data.user_model import User
 from flask_jwt_extended import create_access_token, create_refresh_token
+from flask_cors import CORS, cross_origin
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -24,6 +25,7 @@ def register():
     }), 400
 
 @auth_bp.post('/login')
+@cross_origin()
 def login_user():
     data = request.get_json()
     user = User.get_user_by_username(data['username'])
@@ -35,5 +37,14 @@ def login_user():
         'tokens': {
             'access_token': create_access_token(identity=user.id),
             'refresh_token': create_refresh_token(identity=user.id)
+        },
+        'user': {
+            'id': user.id,
+            'username': user.username,
+            'email': user.email
         }
     }), 200
+    
+    
+    
+# user = User.query.filter_by(id=get_jwt_identity()).first()
