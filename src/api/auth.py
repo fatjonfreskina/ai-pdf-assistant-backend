@@ -2,9 +2,11 @@ from flask import Blueprint, jsonify, request
 from data.user_model import User
 from flask_jwt_extended import create_access_token, create_refresh_token
 from flask_cors import CORS, cross_origin
+from datetime import timedelta
 
 auth_bp = Blueprint('auth', __name__)
 
+# TODO: return error message if email is already taken
 @auth_bp.post('/register')
 def register():
     data = request.get_json()
@@ -35,8 +37,8 @@ def login_user():
     return jsonify({
         'message': 'Login successful!',
         'tokens': {
-            'access_token': create_access_token(identity=user.id),
-            'refresh_token': create_refresh_token(identity=user.id)
+            'access_token': create_access_token(identity=user.username, expires_delta=timedelta(days=30)),
+            'refresh_token': create_refresh_token(identity=user.username)
         },
         'user': {
             'id': user.id,
