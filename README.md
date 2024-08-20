@@ -1,10 +1,18 @@
 # openai-pdf-assistant
 
+## Requirements
+
+1. python3.x.x
+2. A ‘.env‘ file with the following structure:
+
+
 ## Installation
 
 ```bash
+python -m venv venv
 pip install -r requirements.txt
 cd src
+export FLASK_APP=main.py
 flask run
 ```
 
