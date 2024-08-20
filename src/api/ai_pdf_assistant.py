@@ -6,6 +6,7 @@ from openai import OpenAI  # Version 1.33.0
 from openai.types.beta.threads.message_create_params import Attachment, AttachmentToolFileSearch
 import os
 from dotenv import load_dotenv
+from api.errors import AiErrors
 
 """
 Documentation available here: https://platform.openai.com/docs/assistants/quickstart
@@ -81,7 +82,11 @@ def ask_question():
 
         # Check if the run was successful
         if run.status != "completed":
-            return jsonify({"error": "Failed to process the request"}), 500
+            error = AiErrors.get_error_instance(AiErrors.CLIENT_RUN_FAIL)
+            return jsonify({
+                "message": error[0],
+                "error": error[1]
+                }), 500
 
         # Fetch the response message
         messages_cursor = client.beta.threads.messages.list(thread_id=thread.id)
@@ -95,7 +100,11 @@ def ask_question():
         return jsonify({"response": response_text})
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        error = AiErrors.get_error_instance(AiErrors.UNHANDLED_EXCEPTION, str(e))
+        return jsonify({
+            'message': error[0],
+            'error': error[1]
+        }), 500
     
 
 # TEST: TODO 

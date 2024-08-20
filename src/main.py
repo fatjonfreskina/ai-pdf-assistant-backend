@@ -4,9 +4,9 @@ from api.auth import auth_bp
 from api.users import users_bp
 from api.ai_pdf_assistant import ai_pdf_assistant_bp
 from flask_cors import CORS, cross_origin
-import logging
 from flask_jwt_extended import jwt_required, get_jwt
 from data.user_model import User
+from api.errors import AuthenticationErrors
 
 # TODO: Move extensions in another place
 # TODO: Fix the sha256 in db
@@ -39,23 +39,26 @@ def create_app():
     # Error handling 
     @jwt.expired_token_loader
     def my_expired_token_callback(jwt_header, jwt_data):
+        error = AuthenticationErrors.get_error_instance(AuthenticationErrors.TOKEN_EXPIRED)
         return jsonify({
-            'message': 'The token has expired',
-            'error': 'token_expired' 
+            'message':  error[0],
+            'error':    error[1]
         }), 401
     
     @jwt.invalid_token_loader
     def my_invalid_token_callback(error):
+        error = AuthenticationErrors.get_error_instance(AuthenticationErrors.INVALID_TOKEN)
         return jsonify({
-            'message': 'Signature verification failed',
-            'error': 'invalid_token' 
+            'message': error[0],
+            'error': error[1]
         }), 401
         
     @jwt.unauthorized_loader
     def my_unauthorized_loader(error):
+        error = AuthenticationErrors.get_error_instance(AuthenticationErrors.AUTH_REQUIRED)
         return jsonify({
-            'message': 'Missing Authorization Header',
-            'error': 'authorization_required' 
+            'message': error[0],
+            'error': error[1] 
         }), 401
     return app
 
