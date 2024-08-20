@@ -24,6 +24,15 @@ class User(db.Model):
     @classmethod
     def get_user_by_username(cls, username: str) -> 'User':
         return cls.query.filter_by(username=username).first()
+
+    @classmethod
+    def validate_password(cls, new_password: str) -> bool:
+        # If needed, implement additional checking here, although most of it will be done in the frontend.
+        return True
+
+    @classmethod
+    def get_user_by_email(cls, email: str) -> 'User':
+        return cls.query.filter_by(email=email).first()
     
     # Db instance methods
     
