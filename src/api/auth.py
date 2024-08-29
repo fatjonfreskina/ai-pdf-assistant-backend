@@ -7,7 +7,6 @@ from api.errors import RequestErrors, AuthenticationErrors
 
 auth_bp = Blueprint('auth', __name__)
 
-# TODO: TEST
 @auth_bp.post('/register')
 def register():
     """

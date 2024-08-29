@@ -9,7 +9,6 @@ from data.user_model import User
 from api.errors import AuthenticationErrors
 
 # TODO: Move extensions in another place
-# TODO: Fix the sha256 in db
 
 def create_app():
     app = Flask(__name__)

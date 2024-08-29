@@ -7,7 +7,6 @@ from api.errors import AuthenticationErrors, RequestErrors
 
 users_bp = Blueprint('users', __name__)
 
-# TODO: TEST 
 @users_bp.post('/update-password')
 @jwt_required()
 def update_password():
@@ -54,7 +53,6 @@ def update_password():
         'message': 'Password updated successfully',
     }), 200
 
-# TODO: TEST
 @users_bp.post('/delete')
 @jwt_required()
 def delete_user():
@@ -81,7 +79,6 @@ def delete_user():
     }), 200
 
 ### ADMIN ENDPOINTS ###
-# TODO: TEST
 @users_bp.post('/admin/update-password')
 @jwt_required
 def admin_update_password():
@@ -126,7 +123,6 @@ def admin_update_password():
             'message': 'Password updated successfully',
         }), 200
 
-# TODO: TEST
 @users_bp.post('/admin/delete')
 @jwt_required()
 def admin_delete_user():
@@ -161,7 +157,6 @@ def admin_delete_user():
         'message': 'User deleted successfully',
     }), 200
 
-# TODO: TEST
 @users_bp.get('/admin/get-all')
 @jwt_required()
 def get_all_users():

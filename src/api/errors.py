@@ -5,7 +5,6 @@ logging.basicConfig(level=logging.ERROR)
 class Error():
     """Generic error class, defines methods inherited by child classes.
     """
-    @staticmethod
     def log_error(func):
         """Decorator to log the error when it is retrieved. 
 
