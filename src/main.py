@@ -13,6 +13,7 @@ from api.errors import AuthenticationErrors
 def create_app():
     app = Flask(__name__)
     app.config.from_prefixed_env()
+    app.config['UPLOAD_FOLDER'] = 'uploads'
     cors = CORS(app)
     db.init_app(app)
     jwt.init_app(app)
