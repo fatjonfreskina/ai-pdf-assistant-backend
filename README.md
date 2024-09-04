@@ -5,7 +5,6 @@
 1. python3.x.x
 2. A ‘.env‘ file with the following structure:
 
-
 ## Installation
 
 ```bash
@@ -14,6 +13,20 @@ pip install -r requirements.txt
 cd src
 export FLASK_APP=main.py
 flask run
+```
+
+Required `.env` file:
+
+```bash
+ENVIRONMENT=<development|production>
+OPENAI_API_KEY=<your_openai_api_key>
+FLASK_SECRET_KEY=<your_flask_secret_key>
+FLASK_DEBUG=<True|False>
+FLASK_APP=main.py
+FLASK_RUN_PORT=<port> 
+FLASK_SQLALCHEMY_DATABASE_URI=<database_uri>
+FLASK_SQLALCHEMY_ECHO=<True|False>
+FLASK_JWT_SECRET_KEY=<jwt_secret_key>
 ```
 
 ## Useful links
