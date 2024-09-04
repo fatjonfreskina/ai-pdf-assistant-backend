@@ -91,11 +91,17 @@ class AiErrors(Error):
     CLIENT_RUN_FAIL = 'CLIENT_RUN_FAIL'
     REQUEST_FAILED = 'REQUEST_FAILED'
     UNHANDLED_EXCEPTION = 'UNHANDLED_EXCEPTION'
+    FILE_NOT_FOUND = 'FILE_NOT_FOUND'
+    FILENAME_NOT_ALLOWED = 'FILENAME_NOT_ALLOWED'
+    ASSISTANT_NOT_FOUND = 'ASSISTANT_NOT_FOUND'
 
     errors = {
         'CLIENT_RUN_FAIL': ('The call to the AI API failed.', 'client_run_fail'),
         'REQUEST_FAILED': ('Communication to the AI API failed.', 'request_failed'),
-        'UNHANDLED_EXCEPTION': ('An unhandled exception occured.', 'unhandled_exception')
+        'UNHANDLED_EXCEPTION': ('An unhandled exception occured.', 'unhandled_exception'),
+        'FILE_NOT_FOUND': ('The file was not found in the request', 'file_not_found'),
+        'FILENAME_NOT_ALLOWED': ('The filename is not allowed', 'filename_not_allowed'),
+        'ASSISTANT_NOT_FOUND': ('The assistant was not found', 'assistant_not_found')
     }
 
 
