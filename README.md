@@ -1,50 +1,48 @@
 # openai-pdf-assistant
 
-## Requirements
-
-1. python3.x.x
-2. A ‘.env‘ file with the following structure:
+Laveraging OpenAI's Assistant API to create a PDF assistant that can help you with your PDFs.
 
 ## Installation
 
-```bash
-python -m venv venv
-pip install -r requirements.txt
-cd src
-export FLASK_APP=main.py
-flask run
-```
-
-Required `.env` file:
+1. Clone the repository
+2. Create a `.env` file in the root directory with the following content:
 
 ```bash
-ENVIRONMENT=<development|production>
 OPENAI_API_KEY=<your_openai_api_key>
-FLASK_SECRET_KEY=<your_flask_secret_key>
+ENVIRONMENT=<development|production>
+FLASK_SECRET_KEY=<flask_secret>     # You can generate this from the terminal (see below)
 FLASK_DEBUG=<True|False>
 FLASK_APP=main.py
-FLASK_RUN_PORT=<port> 
+FLASK_RUN_PORT=<port>
 FLASK_SQLALCHEMY_DATABASE_URI=<database_uri>
 FLASK_SQLALCHEMY_ECHO=<True|False>
-FLASK_JWT_SECRET_KEY=<jwt_secret_key>
+FLASK_JWT_SECRET_KEY=<jwt_secret_key> # Generate this from flask shell (see below)
+CORS_HEADERS=Content-Type
 ```
 
-## Useful links
+1. Create a virtual environment: `python -m venv venv`
+2. Activate the virtual environment: `source venv/bin/activate` or `.\venv\Scripts\activate` on Windows
+3. Install the requirements: `pip install -r requirements.txt`
+4. Set the `FLASK_APP` environment variable: `cd src && <export|set> FLASK_APP=main.py`
+5. Finally, run the application: `flask run`
 
-### SQLAlchemy
+### Local database setup (SQLAlchemy)
 
 ```bash
-flask shell # to open a shell
-db # to access the db object
+# Generate FLASK_SECRET_KEY
+python -c 'import secrets; print(secrets.token_urlsafe(32))'
+
+# Generate FLASK_JWT_SECRET_KEY
+python -c 'import secrets; print(secrets.token_hex(12))'
+
+# Setup the DB (SQLAlchemy)
+flask shell
+db # Access the SQLAlchemy database instance
 from data.user_model import User
 db.create_all()
-
-# Generate FLASK_JWT_SECRET_KEY from flask shell
-import secrects
-secrets.token_hex(12)
 ```
 
-More commands:
+## Flask shell commands
 
 ```bash
 app             # Access the Flask application instance.
