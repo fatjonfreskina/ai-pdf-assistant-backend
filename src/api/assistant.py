@@ -12,9 +12,9 @@ from werkzeug.utils import secure_filename
 Documentation available here: https://platform.openai.com/docs/assistants/quickstart
 """
 
-ai_pdf_assistant_bp = Blueprint('ai', __name__)
+assistant_bp = Blueprint('ai', __name__)
 
-@ai_pdf_assistant_bp.before_request
+@assistant_bp.before_request
 def before_request():
     g.MY_OPENAI_KEY = current_app.config.get('OPENAI_API_KEY')
     g.ALLOWED_EXTENSIONS = {'pdf'}
@@ -22,16 +22,32 @@ def before_request():
     g.client = OpenAI(api_key=g.MY_OPENAI_KEY)
 
 @jwt_required()
-@ai_pdf_assistant_bp.get('/assistants')
+@assistant_bp.get('/assistants')
 def get_assistants():
     """Return a list of all the available assistants.
     """
     return jsonify({
         "assistants": [assistant.name for assistant in g.client.beta.assistants.list()]
     }), 200
+    
+@jwt_required()
+@assistant_bp.get('/assistant/<assistant_name>')
+def get_assistant_info(assistant_name: str):
+    """Return the information of the assistant with the given name.
+    """
+    assistant_instance = get_assistant_instance(assistant_name=assistant_name)
+    if assistant_instance is None:
+        error = AiErrors.get_error_instance(AiErrors.ASSISTANT_NOT_FOUND)
+        return jsonify({
+            "message": error[0],
+            "error": error[1]
+        }), 400
+    return jsonify({
+        "assistant": assistant_instance.to_dict()
+    }), 200
 
 @jwt_required()
-@ai_pdf_assistant_bp.post('/create-assistant')
+@assistant_bp.post('/create-assistant')
 def create_assistant():
     """Creates a new assistant with the given name, description, and instructions.
     
@@ -59,7 +75,7 @@ def create_assistant():
         }), 400
         
 @jwt_required()
-@ai_pdf_assistant_bp.post('/add-pdf')
+@assistant_bp.post('/add-pdf')
 def add_pdf_to_assistant():
     """Add a PDF file to the assistant's tool. Useful documentation here: https://platform.openai.com/docs/assistants/tools/file-search
     
@@ -139,11 +155,10 @@ def add_pdf_to_assistant():
     return jsonify({
         "message": "File uploaded successfully."
     }), 201
-
-
+    
 # TEST: OK
 @jwt_required()
-@ai_pdf_assistant_bp.post('/ask')
+@assistant_bp.post('/ask')
 def ask_question():
     """Ask a question to the assistant and return the response.
     
