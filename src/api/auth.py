@@ -62,7 +62,6 @@ def register():
     }), 200
 
 @auth_bp.post('/login')
-@cross_origin()
 def login_user():
     data = request.get_json()
     username = data.get('username')
@@ -86,5 +85,3 @@ def login_user():
             'email': user.email
         }
     }), 200
-    
-# user = User.query.filter_by(id=get_jwt_identity()).first()
