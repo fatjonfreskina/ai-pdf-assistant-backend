@@ -2,26 +2,44 @@ from flask import Flask, request, jsonify
 from data.extensions import db, jwt
 from api.auth import auth_bp
 from api.users import users_bp
-from api.ai_pdf_assistant import ai_pdf_assistant_bp
+from api.assistant import assistant_bp
 from flask_cors import CORS, cross_origin
 from flask_jwt_extended import jwt_required, get_jwt
 from data.user_model import User
 from api.errors import AuthenticationErrors
+from flask_sqlalchemy import SQLAlchemy
+from dotenv import load_dotenv
+import os, logging
 
-# TODO: Move extensions in another place
+logging.basicConfig(level=logging.INFO)
+load_dotenv()
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__)   
     app.config.from_prefixed_env()
-    app.config['UPLOAD_FOLDER'] = 'uploads'
+    
+    if os.getenv('ENVIRONMENT') == 'production':
+        app.config['UPLOAD_FOLDER'] = '/media'
+        SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI_PROD')
+        app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
+    else:
+        app.config['UPLOAD_FOLDER'] = 'uploads'
+        SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI_DEV')
+        app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
+        
+    logging.info(f'Running in {os.getenv("ENVIRONMENT")} mode')
+    
     cors = CORS(app)
     db.init_app(app)
+    with app.app_context():
+        print('Creating tables')
+        db.create_all()
     jwt.init_app(app)
     
     # Register the blueprints  
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(users_bp, url_prefix='/users')
-    app.register_blueprint(ai_pdf_assistant_bp, url_prefix='/ai')
+    app.register_blueprint(assistant_bp, url_prefix='/ai')
     
     # Additional claims loader 
     @jwt.additional_claims_loader
@@ -61,10 +79,3 @@ def create_app():
             'error': error[1] 
         }), 401
     return app
-
-
-@auth_bp.get('/whoami')
-@jwt_required()
-def whoami():
-    claims = get_jwt()
-    return jsonify( { 'message': 'You are authenticated', 'claims': claims } )
