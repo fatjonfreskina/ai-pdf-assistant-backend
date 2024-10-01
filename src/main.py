@@ -9,15 +9,32 @@ from data.user_model import User
 from api.errors import AuthenticationErrors
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
-import os, logging
+import os
+from logging.config import dictConfig
 
-logging.basicConfig(level=logging.INFO)
 load_dotenv()
 
 def create_app():
+    # Set up logging
+    dictConfig({
+        'version': 1,
+        'formatters': {'default': {
+            'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
+        }},
+        'handlers': {'wsgi': {
+            'class': 'logging.StreamHandler',
+            'stream': 'ext://flask.logging.wsgi_errors_stream',
+            'formatter': 'default'
+        }},
+        'root': {
+            'level': 'INFO',
+            'handlers': ['wsgi']
+        }
+    })
+    
     app = Flask(__name__)   
     app.config.from_prefixed_env()
-    
+            
     if os.getenv('ENVIRONMENT') == 'production':
         app.config['UPLOAD_FOLDER'] = '/media'
         SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI_PROD')
@@ -27,12 +44,12 @@ def create_app():
         SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI_DEV')
         app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
         
-    logging.info(f'Running in {os.getenv("ENVIRONMENT")} mode')
+    app.logger.info(f'Running in {os.getenv("ENVIRONMENT")} mode')
     
     cors = CORS(app)
     db.init_app(app)
     with app.app_context():
-        print('Creating tables')
+        app.logger.info('Creating all tables')
         db.create_all()
     jwt.init_app(app)
     

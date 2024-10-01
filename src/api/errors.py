@@ -1,6 +1,5 @@
-import logging
+from flask import current_app
 from typing import Tuple, Optional
-logging.basicConfig(level=logging.ERROR)
 
 class Error():
     """Generic error class, defines methods inherited by child classes.
@@ -14,14 +13,14 @@ class Error():
         def wrapper(cls, key: str, exception : str = None):
             error = func(cls, key)
             if error and exception:
-                logging.error(f"{cls.__name__} error retrieved: {error[0]} (Code: {error[1]}), (Exception: {exception})")
+                current_app.logger.error(f"{cls.__name__} error retrieved: {error[0]} (Code: {error[1]}), (Exception: {exception})")
                 return error
             
             if error:
-                logging.error(f"{cls.__name__} error retrieved: {error[0]} (Code: {error[1]})")
+                current_app.logger.error(f"{cls.__name__} error retrieved: {error[0]} (Code: {error[1]})")
                 return error
             
-            logging.error(f"Failed to retrieve error in {cls.__name__}, error key: {key}")
+            current_app.logger.error(f"Failed to retrieve error in {cls.__name__}, error key: {key}")
             return error
         return wrapper
 

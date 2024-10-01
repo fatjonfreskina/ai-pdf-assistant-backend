@@ -16,6 +16,11 @@ assistant_bp = Blueprint('ai', __name__)
 
 @assistant_bp.before_request
 def before_request():
+    if request.headers.getlist("X-Forwarded-For"):
+        ip = request.headers.getlist("X-Forwarded-For")[0]
+    else:
+        ip = request.remote_addr
+    current_app.logger.info(f"Request from {ip}")
     g.MY_OPENAI_KEY = current_app.config.get('OPENAI_API_KEY')
     g.ALLOWED_EXTENSIONS = {'pdf'}
     g.UPLOAD_FOLDER = current_app.config.get('UPLOAD_FOLDER')
@@ -35,6 +40,7 @@ def get_assistants():
 def get_assistant_info(assistant_name: str):
     """Return the information of the assistant with the given name.
     """
+    current_app.logger.info(f"Called get_assistant_info with assistant_name: {assistant_name}")
     assistant_instance = get_assistant_instance(assistant_name=assistant_name)
     if assistant_instance is None:
         error = AiErrors.get_error_instance(AiErrors.ASSISTANT_NOT_FOUND)
@@ -58,6 +64,7 @@ def create_assistant():
     }
     """
     new_assistant = request.get_json()
+    current_app.logger.info(f"Called create_assistant with data: {new_assistant}")
     if new_assistant.get("name") not in [assistant.name for assistant in g.client.beta.assistants.list()]:
         g.client.beta.assistants.create(
             model="gpt-4o",
@@ -87,6 +94,7 @@ def add_pdf_to_assistant():
     # data = request.get_json()
     assistant_name = request.form.get('assistant_name')
     assistant_instance = get_assistant_instance(assistant_name=assistant_name)
+    current_app.logger.info(f"Called add_pdf_to_assistant with assistant_name: {assistant_name}")
     
     if assistant_instance is None:
         error = AiErrors.get_error_instance(AiErrors.ASSISTANT_NOT_FOUND)
@@ -142,10 +150,6 @@ def add_pdf_to_assistant():
     
     for stream in file_streams:
         stream.close()
-        
-    # Print the file batch status and counts
-    print(file_batch.status)
-    print(file_batch.file_counts)   
     
     assistant = g.client.beta.assistants.update(
         assistant_id=assistant_instance.id,
@@ -170,6 +174,7 @@ def ask_question():
         data = request.get_json()
         question = data.get('question')
         assistant_name = data.get('assistant_name')
+        current_app.logger.info(f"Called ask_question with question: {question} and assistant_name: {assistant_name}")
 
         # Create a new thread
         thread = g.client.beta.threads.create()

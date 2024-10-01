@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, current_app
 from data.user_model import User
 from flask_jwt_extended import create_access_token, create_refresh_token
 from flask_cors import CORS, cross_origin
@@ -20,6 +20,7 @@ def register():
     data = request.get_json()
     new_username = data.get('username')
     email = data.get('email')
+    current_app.logger.info(f"Called register with username: {new_username} and email: {email}")
     password = data.get('password')
 
     if not new_username or not email or not password:
@@ -65,6 +66,7 @@ def register():
 def login_user():
     data = request.get_json()
     username = data.get('username')
+    current_app.logger.info(f"Called login with username: {username}")
     user = User.get_user_by_username(username)
     if not user or not user.check_password(data['password']):
         error = AuthenticationErrors.get_error_instance(AuthenticationErrors.LOGIN_FAILED)
