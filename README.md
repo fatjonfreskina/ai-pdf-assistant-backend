@@ -1,8 +1,26 @@
-# openai-pdf-assistant
+# Openai-pdf-assistant :robot:
 
 Laveraging OpenAI's Assistant API to create a PDF assistant that can help you with your PDFs.
 
-## Installation
+## Features :sparkles:
+
+- [X] User authentication
+- [X] Assistant creation and management
+- [X] PDF upload
+- [x] Ask questions about the PDFs
+- [ ] Hanlde conversations
+
+## Contribute :raised_hands:
+
+Contributions are more than welcome using the ["fork and pull request"](https://docs.github.com/en/get-started/exploring-projects-on-github/contributing-to-a-project) workflow. Briefly:
+
+1. Fork the project and clone it locally.
+2. Create a new branch following the pattern `<placeholder>-issueNumber`. Where placeholders can be `develop`, `bugfix`, `documentation` only.
+3. Make your changes and push them to your fork.
+4. Create a pull request to the main branch.
+5. Your pull request will be reviewed and merged.
+
+## Installation :wrench:
 
 1. Clone the repository
 2. Create a `.env` file in the root directory with the following content:
@@ -26,7 +44,7 @@ CORS_HEADERS=Content-Type
 4. Set the `FLASK_APP` environment variable: `cd src && <export|set> FLASK_APP=main.py`
 5. Finally, run the application: `flask run`
 
-### Local database setup (SQLAlchemy)
+### Local database setup (SQLAlchemy) :floppy_disk:
 
 ```bash
 # Generate FLASK_SECRET_KEY
@@ -42,7 +60,7 @@ from data.user_model import User
 db.create_all()
 ```
 
-## Flask shell commands
+## Flask shell useful commands :shell:
 
 ```bash
 app             # Access the Flask application instance.
