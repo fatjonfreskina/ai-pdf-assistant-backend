@@ -17,7 +17,7 @@ Contributions are more than welcome using the ["fork and pull request"](https://
 1. Fork the project and clone it locally.
 2. Create a new branch following the pattern `<placeholder>-issueNumber`. Where placeholders can be `develop`, `bugfix`, `documentation` only.
 3. Make your changes and push them to your fork.
-4. Create a pull request to the main branch.
+4. Create a pull request to the **dev** branch.
 5. Your pull request will be reviewed and merged.
 
 ## Installation :wrench:
