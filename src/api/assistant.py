@@ -195,6 +195,7 @@ def ask_question():
 
         # Check if the run was successful
         if run.status != "completed":
+            current_app.logger.error(f"Run failed with status: {run.status}")
             error = AiErrors.get_error_instance(AiErrors.CLIENT_RUN_FAIL)
             return jsonify({
                 "message": error[0],
