@@ -192,6 +192,12 @@ def ask_question():
             timeout=60,
         )
 
+        # Retrieve the failure details
+        if run.status == "failed":
+            run = g.client.beta.threads.runs.retrieve(thread_id=thread.id, run_id=run.id)
+            failure_error = run.last_error.code + " - " + run.last_error.message
+            current_app.logger.error(f"Run failed with error: {failure_error}")
+            
         # Check if the run was successful
         if run.status != "completed":
             current_app.logger.error(f"Run failed with status: {run.status}")
