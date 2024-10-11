@@ -160,7 +160,6 @@ def add_pdf_to_assistant():
         "message": "File uploaded successfully."
     }), 201
     
-# TEST: OK
 @jwt_required()
 @assistant_bp.post('/ask')
 def ask_question():
@@ -208,10 +207,24 @@ def ask_question():
 
         # Extract the assistant's response
         message = messages[0]
-        response_text = message.content[0].text.value
+        message_content = message.content[0].text
+        annotations = message_content.annotations
+        citations = []
+        # Iterate over the annotations and add footnotes
+        for index, annotation in enumerate(annotations):
+            # Replace the text with a footnote
+            message_content.value = message_content.value.replace(annotation.text, f' [{index}]')
+            # Gather citations based on annotation attributes
+            if (file_citation := getattr(annotation, 'file_citation', None)):
+                cited_file = g.client.files.retrieve(file_citation.file_id)
+                citations.append(f"[{index}] from {cited_file.filename}")
+                # Quotes would be amazing. Although they seem to be removed from the API: 
+                # https://github.com/openai/openai-openapi/issues/263
 
         # Return the response
-        return jsonify({"response": response_text})
+        return jsonify({
+            "response": message_content.value,
+            "citations": citations})
 
     except Exception as e:
         error = AiErrors.get_error_instance(AiErrors.UNHANDLED_EXCEPTION, str(e))
