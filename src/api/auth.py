@@ -8,6 +8,7 @@ from api.errors import RequestErrors, AuthenticationErrors
 auth_bp = Blueprint('auth', __name__)
 
 @auth_bp.post('/register')
+@cross_origin()
 def register():
     """
     Sign up a new user.
@@ -16,12 +17,14 @@ def register():
         'username': str, required
         'email':    str, required 
         'password': str, required
+        'sudoPassword': str, required
     """
     data = request.get_json()
     new_username = data.get('username')
     email = data.get('email')
     current_app.logger.info(f"Called register with username: {new_username} and email: {email}")
     password = data.get('password')
+    sudoPassword = data.get('sudoPassword')
 
     if not new_username or not email or not password:
         error = RequestErrors.get_error_instance(RequestErrors.BAD_REQUEST_BODY_NOT_FOUND)
@@ -45,6 +48,13 @@ def register():
             'message': error[0],
             'error': error[1]
         }), 400
+        
+    if sudoPassword != current_app.config['SUDO_PASSWORD']:
+        error = AuthenticationErrors.get_error_instance(AuthenticationErrors.SUDO_PASSWORD_INCORRECT)
+        return jsonify({
+            'message': error[0],
+            'error': error[1]
+        }), 400
 
     new_user = User(username = new_username, email = email)
     is_password_valid = User.validate_password(password)
@@ -63,6 +73,7 @@ def register():
     }), 200
 
 @auth_bp.post('/login')
+@cross_origin()
 def login_user():
     data = request.get_json()
     username = data.get('username')

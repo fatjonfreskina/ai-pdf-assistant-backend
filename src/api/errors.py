@@ -52,6 +52,7 @@ class AuthenticationErrors(Error):
     INVALID_PASSWORD = 'INVALID_PASSWORD'
     LOGIN_FAILED = 'LOGIN_FAILED'
     INVALID_USER = 'INVALID_USER'
+    SUDO_PASSWORD_INCORRECT = 'SUDO_PASSWORD_INCORRECT'
     
     errors = {
         TOKEN_EXPIRED:            ("Token expired, login again to get a new one.", "token_expired"),
@@ -61,7 +62,8 @@ class AuthenticationErrors(Error):
         EMAIL_ALREADY_TAKEN:      ("Email already in use", "email_already_taken"),
         INVALID_PASSWORD:         ("Password is not valid", "invalid_password"),
         LOGIN_FAILED:             ("Login failed", "login_failed"),
-        INVALID_USER:             ('The user who sent the request was not found', 'invalid_user')
+        INVALID_USER:             ('The user who sent the request was not found', 'invalid_user'),
+        SUDO_PASSWORD_INCORRECT:  ('The sudo password is incorrect', 'sudo_password_incorrect')
     }
 
 class RequestErrors(Error):

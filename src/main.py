@@ -46,6 +46,7 @@ def create_app():
         app.config['CORS_HEADERS'] = 'Content-Type'
         
     app.logger.info(f'Running in {os.getenv("ENVIRONMENT")} mode')
+    app.config['SUDO_PASSWORD'] = os.getenv('SUDO_PASSWORD')
     
     cors = CORS(app)
     db.init_app(app)
