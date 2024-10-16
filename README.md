@@ -35,7 +35,6 @@ FLASK_RUN_PORT=<port>
 FLASK_SQLALCHEMY_DATABASE_URI=<database_uri>
 FLASK_SQLALCHEMY_ECHO=<True|False>
 FLASK_JWT_SECRET_KEY=<jwt_secret_key> # Generate this from flask shell (see below)
-CORS_HEADERS=Content-Type
 ```
 
 1. Create a virtual environment: `python -m venv venv`

@@ -43,6 +43,7 @@ def create_app():
         app.config['UPLOAD_FOLDER'] = 'uploads'
         SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI_DEV')
         app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
+        app.config['CORS_HEADERS'] = 'Content-Type'
         
     app.logger.info(f'Running in {os.getenv("ENVIRONMENT")} mode')
     
