@@ -39,13 +39,14 @@ def create_app():
         app.config['UPLOAD_FOLDER'] = '/media'
         SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI_PROD')
         app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
+        app.logger.info(f'Running in production mode')
     else:
         app.config['UPLOAD_FOLDER'] = 'uploads'
         SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI_DEV')
         app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
+        app.logger.info(f'Running in development mode')
         app.config['CORS_HEADERS'] = 'Content-Type'
         
-    app.logger.info(f'Running in {os.getenv("ENVIRONMENT")} mode')
     app.config['SUDO_PASSWORD'] = os.getenv('SUDO_PASSWORD')
     
     cors = CORS(app)
