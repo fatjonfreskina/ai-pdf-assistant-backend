@@ -68,9 +68,6 @@ class AuthenticationErrors(Error):
 
 class RequestErrors(Error):
     """Defines errors caused by frontend's requests
-
-    Args:
-        Error (_type_): _description_
     """
     BAD_REQUEST_BODY_NOT_FOUND = 'BAD_REQUEST_BODY_NOT_FOUND'
     BAD_REQUEST_BODY_NOT_VALID =  'BAD_REQUEST_BODY_NOT_VALID'
@@ -80,8 +77,14 @@ class RequestErrors(Error):
         BAD_REQUEST_BODY_NOT_VALID: ('The request body was found, but its value is not valid', 'bad_request_body_not_valid')
     }
 
-class ResponseErrors(Error):
-    pass
+class ServerErrors(Error):
+    """Defines errors caused by the server
+    """
+    INTERNAL_SERVER_ERROR = 'INTERNAL_SERVER_ERROR'
+    
+    errors = {
+        INTERNAL_SERVER_ERROR: ('An internal server error occured', 'internal_server_error')
+    }    
 
 class AiErrors(Error):
     """Defines errors occured during the calls to OpenAI's API

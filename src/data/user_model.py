@@ -10,8 +10,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(256), nullable=False)
-    password: Mapped[str]
+    password: Mapped[str] = db.Column(db.String(256), nullable=False)
     
     def __repr__(self):
         return f'<User {self.username}>'
@@ -28,7 +27,6 @@ class User(db.Model):
 
     @classmethod
     def validate_password(cls, new_password: str) -> bool:
-        # If needed, implement additional checking here, although most of it will be done in the frontend.
         return True
 
     @classmethod

@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from data.extensions import db, jwt
-from api.auth import auth_bp
-from api.users import users_bp
+from api.admin import admin_bp
+from api.user import user_bp
 from api.assistant import assistant_bp
 from flask_cors import CORS, cross_origin
 from flask_jwt_extended import jwt_required, get_jwt
@@ -57,9 +57,9 @@ def create_app():
     jwt.init_app(app)
     
     # Register the blueprints  
-    app.register_blueprint(auth_bp, url_prefix='/auth')
-    app.register_blueprint(users_bp, url_prefix='/users')
+    app.register_blueprint(user_bp, url_prefix='/user')
     app.register_blueprint(assistant_bp, url_prefix='/ai')
+    app.register_blueprint(admin_bp, url_prefix='/admin')
     
     # Additional claims loader 
     @jwt.additional_claims_loader
