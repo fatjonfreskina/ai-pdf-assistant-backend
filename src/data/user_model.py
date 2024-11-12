@@ -27,7 +27,18 @@ class User(db.Model):
 
     @classmethod
     def validate_password(cls, new_password: str) -> bool:
+        if len(new_password) < 8:
+            return False
+        
+        if not any(char.isdigit() for char in new_password):
+            return False
+        
+        if not any(char.isupper() for char in new_password):
+            return False
+        
         return True
+        
+        
 
     @classmethod
     def get_user_by_email(cls, email: str) -> 'User':
