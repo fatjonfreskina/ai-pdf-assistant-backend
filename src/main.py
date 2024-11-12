@@ -11,6 +11,7 @@ from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 import os
 from logging.config import dictConfig
+from itsdangerous import URLSafeTimedSerializer
 
 load_dotenv()
 
@@ -37,16 +38,20 @@ def create_app():
             
     if os.getenv('ENVIRONMENT') == 'production':
         app.config['UPLOAD_FOLDER'] = '/media'
-        SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI_PROD')
-        app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
+        app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI_PROD')
+        app.config['FRONTEND_URL'] = os.getenv('FRONTEND_URL_PROD')
+        app.config['EMAIL_SERVICE_URL'] = os.getenv('EMAIL_SERVICE_URL_PROD')
         app.logger.info(f'Running in production mode')
     else:
         app.config['UPLOAD_FOLDER'] = 'uploads'
-        SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI_DEV')
-        app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
-        app.logger.info(f'Running in development mode')
+        app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI_DEV')
+        app.config['FRONTEND_URL'] = os.getenv('FRONTEND_URL_DEV')
+        app.config['EMAIL_SERVICE_URL'] = os.getenv('EMAIL_SERVICE_URL_DEV')
         app.config['CORS_HEADERS'] = 'Content-Type'
+        app.logger.info(f'Running in development mode')
         
+    app.config['HASH_SALT'] = os.getenv('HASH_SALT')
+    app.config['EMAIL_SERVICE_API_KEY'] = os.getenv('EMAIL_SERVICE_API_KEY')
     app.config['SUDO_PASSWORD'] = os.getenv('SUDO_PASSWORD')
     
     cors = CORS(app)
@@ -60,6 +65,10 @@ def create_app():
     app.register_blueprint(user_bp, url_prefix='/user')
     app.register_blueprint(assistant_bp, url_prefix='/ai')
     app.register_blueprint(admin_bp, url_prefix='/admin')
+    
+    
+    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    app.config['SERIALIZER'] = serializer
     
     # Additional claims loader 
     @jwt.additional_claims_loader
