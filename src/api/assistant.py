@@ -68,7 +68,7 @@ def create_assistant():
     current_app.logger.info(f"Called create_assistant with data: {new_assistant}")
     if new_assistant.get("name") not in [assistant.name for assistant in g.client.beta.assistants.list()]:
         g.client.beta.assistants.create(
-            model="gpt-4o",
+            model="gpt-4o-mini",
             description=new_assistant.get("description"),
             instructions=new_assistant.get("instructions"),
             tools=[{"type": "file_search"}],
