@@ -1,6 +1,5 @@
 from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import jwt_required, get_jwt
-from flask_cors import CORS, cross_origin
 from data.user_model import User
 from api.errors import AuthenticationErrors, RequestErrors
 from datetime import timedelta

@@ -3,7 +3,7 @@ from data.extensions import db, jwt
 from api.admin import admin_bp
 from api.user import user_bp
 from api.assistant import assistant_bp
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 from flask_jwt_extended import jwt_required, get_jwt
 from data.user_model import User
 from api.errors import AuthenticationErrors
@@ -35,6 +35,9 @@ def create_app():
     
     app = Flask(__name__)   
     app.config.from_prefixed_env()
+    allowed_origin = app.config.get('ALLOWED_ORIGIN')
+    if allowed_origin:
+        cors = CORS(app, resources={r"/api/*": {"origins": allowed_origin}})
             
     if os.getenv('ENVIRONMENT') == 'production':
         app.config['UPLOAD_FOLDER'] = '/media'
@@ -47,7 +50,6 @@ def create_app():
         app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI_DEV')
         app.config['FRONTEND_URL'] = os.getenv('FRONTEND_URL_DEV')
         app.config['EMAIL_SERVICE_URL'] = os.getenv('EMAIL_SERVICE_URL_DEV')
-        app.config['CORS_HEADERS'] = 'Content-Type'
         app.logger.info(f'Running in development mode')
         
     app.config['HASH_SALT'] = os.getenv('HASH_SALT')

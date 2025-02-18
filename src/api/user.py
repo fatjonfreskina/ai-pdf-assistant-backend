@@ -1,5 +1,4 @@
 from flask_jwt_extended import jwt_required, get_jwt, create_access_token, create_refresh_token
-from flask_cors import CORS, cross_origin
 from data.user_model import User
 from api.errors import AuthenticationErrors, RequestErrors, ServerErrors
 from flask import Blueprint, jsonify, request, current_app, url_for
@@ -12,7 +11,6 @@ import requests
 user_bp = Blueprint('user', __name__)
 
 @user_bp.post('/register')
-@cross_origin()
 def register():
     data = request.get_json()
     registration_schema = RegistrationSchema()
@@ -51,7 +49,6 @@ def register():
     return success_response('User created successfully!')
 
 @user_bp.post('/login')
-@cross_origin()
 def login_user():
     data = request.get_json()
     username = data.get('username')

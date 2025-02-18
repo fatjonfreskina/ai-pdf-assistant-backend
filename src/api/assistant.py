@@ -1,7 +1,6 @@
 from flask import Blueprint, jsonify, request, current_app, g
 from data.user_model import User
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required
-from flask_cors import CORS, cross_origin
 from openai import OpenAI  # Version 1.33.0
 from openai.types.beta.threads.message_create_params import Attachment, AttachmentToolFileSearch
 import os
