@@ -140,23 +140,30 @@ def request_password_reset():
     frontend_endpoint_reset_view = current_app.config['FRONTEND_URL'] + 'password_reset/' + token    
     email_service_url = current_app.config['EMAIL_SERVICE_URL'] + 'forward-email-password-reset'
     email_service_api_key = current_app.config['EMAIL_SERVICE_API_KEY']
-    current_app.logger.info(f"Token: {email_service_api_key}")
     
     email_payload = {
         'email': email,
-        'link': frontend_endpoint_reset_view,
-        'token': email_service_api_key
+        'link': frontend_endpoint_reset_view
     }
     
     headers = {
-        'Content-Type': 'application/json',       
+        'Content-Type': 'application/json',
+        'Authorization': f'Bearer {email_service_api_key}'
     }
     
-    current_app.logger.info(f"Sending password reset email to {email}, with reset link: {frontend_endpoint_reset_view}, using email service: {email_service_url}")
-    response = requests.post(email_service_url, json=email_payload, headers=headers)
+    current_app.logger.info("Sending password reset email")
+    response = requests.post(
+        email_service_url,
+        json=email_payload,
+        headers=headers,
+        timeout=10,
+    )
     
     if response.status_code != 200:
-        current_app.logger.error(f"Failed to send password reset email: {response.text}")
+        current_app.logger.error(
+            "Email service rejected password reset request with status %s",
+            response.status_code,
+        )
         error = ServerErrors.get_error_instance(ServerErrors.INTERNAL_SERVER_ERROR)
         return error_response("Failed to send password reset email", error[1], status_code=500)
     
